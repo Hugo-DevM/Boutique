@@ -1,28 +1,3 @@
 {
-  "products": [
-    {
-      "id": "49aecf82-2b0f-45be-8920-8fc12f4039d9",
-      "name": "hugo",
-      "description": "dsads",
-      "price": 399,
-      "image": "https://res.cloudinary.com/dfscqggo9/image/upload/v1775679090/lumiere_boutique/productos/49aecf82-2b0f-45be-8920-8fc12f4039d9/wyzj4cpsxi11zx5tz0xd.png",
-      "images": [
-        "https://res.cloudinary.com/dfscqggo9/image/upload/v1775679093/lumiere_boutique/productos/49aecf82-2b0f-45be-8920-8fc12f4039d9/nafnyuchshqmmfktwqze.png"
-      ],
-      "category": "sale",
-      "visible": true,
-      "featured": false,
-      "variants": [
-        {
-          "color": "Lila",
-          "colorHex": "#8B5CF6"
-        },
-        {
-          "color": "Verde",
-          "colorHex": "#10B981"
-        }
-      ],
-      "createdAt": "2026-04-08T20:11:47.360Z"
-    }
-  ]
+  "products": []
 }
