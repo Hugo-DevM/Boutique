@@ -7,7 +7,7 @@
       "image": "https://res.cloudinary.com/dfscqggo9/image/upload/v1775676407/lumiere_boutique/duhp8qeezeri8ha2yqes.png",
       "category": "sale",
       "badge": "nuevo",
-      "visible": true,
+      "visible": false,
       "featured": true,
       "id": "bd6b0141-bdf1-4177-8eaf-eb6a02961dd3",
       "createdAt": "2026-04-08T19:26:55.741Z"
