@@ -22,6 +22,40 @@
       "featured": false,
       "id": "144222f1-ef12-4951-86ba-6bdd92215f45",
       "createdAt": "2026-04-08T19:44:39.516Z"
+    },
+    {
+      "name": "adasdsa",
+      "description": "ewewq",
+      "price": 2323,
+      "image": "https://res.cloudinary.com/dfscqggo9/image/upload/v1775678419/lumiere_boutique/eaheexylbxk5grik41cq.png",
+      "images": [
+        "https://res.cloudinary.com/dfscqggo9/image/upload/v1775678423/lumiere_boutique/qxxqo6jbakixzvwtkmjx.png",
+        "https://res.cloudinary.com/dfscqggo9/image/upload/v1775678427/lumiere_boutique/cb6d6m1cp1m0y9eq12v0.png",
+        "https://res.cloudinary.com/dfscqggo9/image/upload/v1775678431/lumiere_boutique/gacjltcgheo1ozaavoed.png"
+      ],
+      "category": "sale",
+      "visible": true,
+      "featured": false,
+      "variants": [
+        {
+          "color": "Rojo",
+          "colorHex": "#EF4444"
+        },
+        {
+          "color": "Lila",
+          "colorHex": "#8B5CF6"
+        },
+        {
+          "color": "Azul",
+          "colorHex": "#3B82F6"
+        },
+        {
+          "color": "rojito",
+          "colorHex": "#9b1212"
+        }
+      ],
+      "id": "c3a73073-cad7-4756-a267-ad1492019e02",
+      "createdAt": "2026-04-08T20:01:00.660Z"
     }
   ]
 }
