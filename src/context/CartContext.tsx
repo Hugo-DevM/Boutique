@@ -11,9 +11,9 @@ import { CartItem, Product } from "@/types";
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, qty: number) => void;
+  addItem: (product: Product, selectedColor?: string) => void;
+  removeItem: (id: string, selectedColor?: string) => void;
+  updateQuantity: (id: string, qty: number, selectedColor?: string) => void;
   clearCart: () => void;
   itemCount: number;
   total: number;
@@ -24,6 +24,11 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | null>(null);
+
+// Unique key per product+color combination
+function itemKey(id: string, color?: string) {
+  return color ? `${id}__${color}` : id;
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -48,32 +53,50 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const addItem = (product: Product) => {
+  const addItem = (product: Product, selectedColor?: string) => {
     setItems((prev) => {
-      const exists = prev.find((i) => i.product.id === product.id);
+      const exists = prev.find(
+        (i) =>
+          i.product.id === product.id &&
+          (i.selectedColor ?? "") === (selectedColor ?? "")
+      );
       if (exists) {
         return prev.map((i) =>
-          i.product.id === product.id
+          i.product.id === product.id &&
+          (i.selectedColor ?? "") === (selectedColor ?? "")
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: 1, selectedColor }];
     });
     setIsOpen(true);
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== id));
+  const removeItem = (id: string, selectedColor?: string) => {
+    setItems((prev) =>
+      prev.filter(
+        (i) =>
+          !(
+            i.product.id === id &&
+            (i.selectedColor ?? "") === (selectedColor ?? "")
+          )
+      )
+    );
   };
 
-  const updateQuantity = (id: string, qty: number) => {
+  const updateQuantity = (id: string, qty: number, selectedColor?: string) => {
     if (qty <= 0) {
-      removeItem(id);
+      removeItem(id, selectedColor);
       return;
     }
     setItems((prev) =>
-      prev.map((i) => (i.product.id === id ? { ...i, quantity: qty } : i))
+      prev.map((i) =>
+        i.product.id === id &&
+        (i.selectedColor ?? "") === (selectedColor ?? "")
+          ? { ...i, quantity: qty }
+          : i
+      )
     );
   };
 

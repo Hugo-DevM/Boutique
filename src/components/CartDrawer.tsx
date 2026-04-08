@@ -110,21 +110,32 @@ export default function CartDrawer() {
                 className="flex gap-3 bg-gray-50 rounded-xl p-3"
               >
                 {/* Image */}
-                <div className="w-16 h-20 rounded-lg overflow-hidden bg-violet-50 shrink-0">
+                <div className="relative w-16 h-20 rounded-lg overflow-hidden bg-violet-50 shrink-0">
                   {item.product.image ? (
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.product.image}
-                        alt={item.product.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
+                    <Image
+                      src={item.product.image}
+                      alt={item.product.name}
+                      fill
+                      className="object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-2xl">
                       👗
                     </div>
                   )}
+                  {/* Color dot */}
+                  {item.selectedColor && (() => {
+                    const variant = item.product.variants?.find(
+                      (v) => v.color === item.selectedColor
+                    );
+                    return variant ? (
+                      <span
+                        className="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                        style={{ backgroundColor: variant.colorHex }}
+                        title={variant.color}
+                      />
+                    ) : null;
+                  })()}
                 </div>
 
                 {/* Info */}
@@ -132,6 +143,9 @@ export default function CartDrawer() {
                   <p className="text-sm font-semibold text-gray-900 line-clamp-1">
                     {item.product.name}
                   </p>
+                  {item.selectedColor && (
+                    <p className="text-xs text-gray-400">Color: {item.selectedColor}</p>
+                  )}
                   <p className="text-sm font-bold text-violet-600">
                     ${item.product.price.toLocaleString("es-MX")}
                   </p>
@@ -141,7 +155,7 @@ export default function CartDrawer() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() =>
-                          updateQuantity(item.product.id, item.quantity - 1)
+                          updateQuantity(item.product.id, item.quantity - 1, item.selectedColor)
                         }
                         className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:border-violet-400 hover:text-violet-600 transition-colors text-xs font-bold"
                       >
@@ -152,7 +166,7 @@ export default function CartDrawer() {
                       </span>
                       <button
                         onClick={() =>
-                          updateQuantity(item.product.id, item.quantity + 1)
+                          updateQuantity(item.product.id, item.quantity + 1, item.selectedColor)
                         }
                         className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:border-violet-400 hover:text-violet-600 transition-colors text-xs font-bold"
                       >
@@ -160,7 +174,7 @@ export default function CartDrawer() {
                       </button>
                     </div>
                     <button
-                      onClick={() => removeItem(item.product.id)}
+                      onClick={() => removeItem(item.product.id, item.selectedColor)}
                       className="text-gray-300 hover:text-red-400 transition-colors"
                       aria-label="Eliminar"
                     >

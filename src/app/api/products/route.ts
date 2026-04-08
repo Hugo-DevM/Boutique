@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getProductsFromGitHub, saveProductsToGitHub } from "@/lib/github";
 import { Product } from "@/types";
+import { deleteProductImages } from "@/lib/cloudinary";
 import fs from "fs";
 import path from "path";
 
@@ -70,7 +71,8 @@ export async function POST(request: Request) {
 
     const newProduct: Product = {
       ...product,
-      id: crypto.randomUUID(),
+      // Use ID provided by the form (matches Cloudinary folder) or generate one
+      id: product.id ?? crypto.randomUUID(),
       createdAt: new Date().toISOString(),
     };
 
@@ -116,9 +118,18 @@ export async function DELETE(request: Request) {
     if (!checkPassword(password)) return unauthorized();
 
     const { products, sha } = await getProducts();
+    const target = products.find((p: Product) => p.id === id);
     const filtered = products.filter((p: Product) => p.id !== id);
 
     await saveProducts(filtered, sha);
+
+    // Delete images from Cloudinary (non-blocking — don't fail if this errors)
+    if (target?.image) {
+      deleteProductImages(target.image, target.images ?? []).catch((err) =>
+        console.warn("[DELETE] Cloudinary cleanup failed:", err)
+      );
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[DELETE /api/products]", err);

@@ -21,20 +21,28 @@ export const CATEGORY_ICONS: Record<Category, string> = {
   menos_499: "💸",
 };
 
+export interface ProductVariant {
+  color: string;    // e.g. "Negro"
+  colorHex: string; // e.g. "#000000"
+}
+
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
-  image: string;
+  image: string;          // imagen principal (retrocompatibilidad)
+  images?: string[];      // imágenes adicionales
   category: Category;
   visible: boolean;
   featured?: boolean;
   badge?: string;
+  variants?: ProductVariant[]; // variantes de color
   createdAt: string;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedColor?: string; // color seleccionado (nombre)
 }
