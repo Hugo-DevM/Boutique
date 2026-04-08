@@ -1,3 +1,22 @@
 {
-  "products": []
+  "products": [
+    {
+      "id": "cc15a6e7-f3a6-4509-9441-74e01298e34d",
+      "name": "Vestido ",
+      "description": "",
+      "price": 0,
+      "image": "",
+      "images": [],
+      "category": "menos_499",
+      "visible": true,
+      "featured": false,
+      "variants": [
+        {
+          "color": "Rojo",
+          "colorHex": "#EF4444"
+        }
+      ],
+      "createdAt": "2026-04-08T21:35:06.884Z"
+    }
+  ]
 }
