@@ -17,6 +17,18 @@
         }
       ],
       "createdAt": "2026-04-08T21:35:06.884Z"
+    },
+    {
+      "id": "e0658eb4-a456-4ff0-92bd-0388303b7a65",
+      "name": "prueba",
+      "description": "",
+      "price": 333,
+      "image": "https://res.cloudinary.com/dfscqggo9/image/upload/v1776742076/lumiere_boutique/productos/e0658eb4-a456-4ff0-92bd-0388303b7a65/rkr2ioyhyfkmzl61hyf7.jpg",
+      "images": [],
+      "category": "sale",
+      "visible": true,
+      "featured": false,
+      "createdAt": "2026-04-21T03:28:03.849Z"
     }
   ]
 }
