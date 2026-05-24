@@ -1,6 +1,6 @@
 "use client";
 
-import { Category, CATEGORY_LABELS, CATEGORY_ICONS } from "@/types";
+import { Category, CATEGORY_LABELS } from "@/types";
 
 interface CategoryFilterProps {
   activeCategory: Category | "all";
@@ -24,16 +24,16 @@ export default function CategoryFilter({
   onSearchChange,
 }: CategoryFilterProps) {
   return (
-    <div className="space-y-4 mb-10">
+    <div className="space-y-5 mb-10">
       {/* Search */}
       <div className="relative">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={1.5}
+          strokeWidth={1}
           stroke="currentColor"
-          className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-ink/30"
         >
           <path
             strokeLinecap="round"
@@ -46,39 +46,35 @@ export default function CategoryFilter({
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Buscar prendas..."
-          className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all bg-white"
+          className="w-full pl-11 pr-4 py-3 border border-cream-300 bg-cream-100 text-sm text-ink placeholder-ink/30 focus:outline-none focus:border-champagne transition-colors duration-300"
         />
         {search && (
           <button
             onClick={() => onSearchChange("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/30 hover:text-ink/60 transition-colors duration-200 text-xs tracking-widest"
           >
             ✕
           </button>
         )}
       </div>
 
-      {/* Category pills */}
-      <div className="flex flex-wrap gap-2">
+      {/* Category filters */}
+      <div className="flex flex-wrap gap-px bg-cream-300/50">
         {ALL_CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat;
-          const label =
-            cat === "all" ? "Todas" : CATEGORY_LABELS[cat as Category];
-          const icon =
-            cat === "all" ? "🛍️" : CATEGORY_ICONS[cat as Category];
+          const label = cat === "all" ? "Todas" : CATEGORY_LABELS[cat as Category];
 
           return (
             <button
               key={cat}
               onClick={() => onCategoryChange(cat)}
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-5 py-2.5 text-[10px] font-medium tracking-[0.16em] uppercase transition-colors duration-300 ${
                 isActive
-                  ? "bg-violet-600 text-white shadow-md shadow-violet-200"
-                  : "bg-white border border-gray-200 text-gray-600 hover:border-violet-300 hover:text-violet-600"
+                  ? "bg-espresso text-cream-100"
+                  : "bg-cream-100 text-ink/50 hover:bg-cream-200 hover:text-ink"
               }`}
             >
-              <span>{icon}</span>
-              <span>{label}</span>
+              {label}
             </button>
           );
         })}

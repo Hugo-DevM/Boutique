@@ -31,31 +31,61 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-3">👗</div>
-          <h1
-            className="text-3xl font-semibold text-gray-900"
+    <div className="min-h-[100dvh] bg-espresso flex">
+      {/* Panel izquierdo — decorativo */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-cream-300/10">
+        <span
+          className="text-lg font-medium tracking-[0.14em] text-cream-100"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}
+        >
+          LUMIÈRE
+        </span>
+        <div>
+          <p className="text-[10px] tracking-[0.22em] uppercase text-champagne mb-4">
+            Panel de administración
+          </p>
+          <p
+            className="text-4xl font-light text-cream-100/80 leading-snug max-w-xs"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            Lumi<span className="text-violet-600">ère</span>
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">Panel de administración</p>
+            Gestiona tu boutique con elegancia
+          </p>
+        </div>
+        <p className="text-[10px] tracking-widest text-cream-300/20 uppercase">
+          Puerto Vallarta, México
+        </p>
+      </div>
+
+      {/* Panel derecho — formulario */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 py-16">
+        {/* Logo mobile */}
+        <div className="lg:hidden mb-10 text-center">
+          <span
+            className="text-xl font-medium tracking-[0.14em] text-cream-100"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            LUMIÈRE
+          </span>
+          <p className="text-[10px] tracking-[0.2em] uppercase text-champagne mt-2">
+            Administración
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">
-            Iniciar sesión
-          </h2>
+        <div className="w-full max-w-sm space-y-8">
+          <div>
+            <h1 className="text-2xl font-light text-cream-100" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Iniciar sesión
+            </h1>
+            <p className="text-[11px] text-cream-300/40 mt-1 tracking-wide">
+              Ingresa tu contraseña para continuar
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-[10px] tracking-[0.18em] uppercase text-cream-300/50"
               >
                 Contraseña
               </label>
@@ -67,21 +97,20 @@ export default function LoginPage() {
                 required
                 autoFocus
                 placeholder="••••••••"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all"
+                className="w-full bg-transparent border border-cream-300/20 px-4 py-3 text-sm text-cream-100 placeholder-cream-300/20 focus:outline-none focus:border-champagne transition-colors duration-300"
               />
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-100">
-                <span>⚠️</span>
-                <span>{error}</span>
-              </div>
+              <p className="text-[11px] text-red-400/80 border-l-2 border-red-400/40 pl-3 py-1">
+                {error}
+              </p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-600 hover:bg-violet-700 disabled:bg-violet-300 text-white py-3 rounded-xl font-semibold transition-colors text-sm"
+              className="w-full bg-champagne hover:bg-champagne-dark disabled:opacity-40 text-espresso py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 disabled:cursor-not-allowed mt-2"
             >
               {loading ? "Verificando..." : "Entrar al panel"}
             </button>

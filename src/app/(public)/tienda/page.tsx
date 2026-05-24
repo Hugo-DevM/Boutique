@@ -8,9 +8,7 @@ import { Product, Category } from "@/types";
 export default function TiendaPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState<Category | "all">(
-    "all"
-  );
+  const [activeCategory, setActiveCategory] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -23,7 +21,6 @@ export default function TiendaPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Read ?categoria= from URL on first load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cat = params.get("categoria") as Category | null;
@@ -41,27 +38,27 @@ export default function TiendaPage() {
     );
 
   return (
-    <div className="pt-16 min-h-screen bg-white">
-      {/* Hero banner */}
-      <div className="bg-gradient-to-br from-violet-600 to-purple-700 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-violet-200 text-sm uppercase tracking-widest font-medium mb-3">
+    <div className="pt-16 min-h-[100dvh] bg-cream-100">
+      {/* Header editorial — fondo espresso como el hero */}
+      <div className="bg-espresso py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <p className="text-[10px] font-medium tracking-[0.28em] uppercase text-champagne mb-5">
             Lumière Boutique
           </p>
           <h1
-            className="text-4xl lg:text-5xl font-semibold text-white mb-4"
+            className="text-4xl lg:text-6xl font-light text-cream-100"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             Nuestra Tienda
           </h1>
-          <p className="text-violet-200 max-w-md mx-auto">
+          <p className="mt-4 text-cream-300/50 text-sm max-w-sm">
             Descubre toda nuestra colección de moda femenina
           </p>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <CategoryFilter
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
@@ -74,15 +71,15 @@ export default function TiendaPage() {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-gray-100 rounded-2xl aspect-[4/5] animate-pulse"
+                className="bg-cream-200 animate-pulse"
+                style={{ aspectRatio: "3/4" }}
               />
             ))}
           </div>
         ) : visible.length > 0 ? (
           <>
-            <p className="text-sm text-gray-400 mb-6">
-              {visible.length} prenda{visible.length !== 1 ? "s" : ""}{" "}
-              encontrada{visible.length !== 1 ? "s" : ""}
+            <p className="text-[10px] tracking-widest uppercase text-ink/30 mb-6">
+              {visible.length} prenda{visible.length !== 1 ? "s" : ""}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {visible.map((p) => (
@@ -91,20 +88,23 @@ export default function TiendaPage() {
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-            <span className="text-6xl">👗</span>
-            <h3 className="text-lg font-semibold text-gray-700">
-              No encontramos prendas
+          <div className="flex flex-col items-start justify-center py-24 space-y-5">
+            <div className="w-8 h-px bg-champagne" />
+            <h3
+              className="text-2xl font-light text-ink"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Sin resultados
             </h3>
-            <p className="text-gray-400 text-sm max-w-xs">
-              Intenta con otro término de búsqueda o selecciona otra categoría.
+            <p className="text-sm text-ink/40 max-w-xs">
+              Intenta con otro término o selecciona otra categoría.
             </p>
             <button
               onClick={() => {
                 setSearch("");
                 setActiveCategory("all");
               }}
-              className="text-violet-600 text-sm font-medium hover:underline"
+              className="text-[10px] tracking-[0.18em] uppercase text-champagne hover:text-champagne-dark transition-colors duration-300 border-b border-champagne/40 pb-0.5"
             >
               Limpiar filtros
             </button>

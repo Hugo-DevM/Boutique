@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Product, CATEGORY_LABELS, CATEGORY_ICONS } from "@/types";
+import { Product, CATEGORY_LABELS } from "@/types";
 import ConfirmDialog from "./ConfirmDialog";
 
 interface ProductListProps {
@@ -11,11 +11,7 @@ interface ProductListProps {
   onRefresh: () => void;
 }
 
-export default function ProductList({
-  products,
-  onEdit,
-  onRefresh,
-}: ProductListProps) {
+export default function ProductList({ products, onEdit, onRefresh }: ProductListProps) {
   const [pendingDelete, setPendingDelete] = useState<Product | null>(null);
 
   const getPassword = () => sessionStorage.getItem("lumiere_password") ?? "";
@@ -23,194 +19,128 @@ export default function ProductList({
   const handleToggleVisible = async (product: Product) => {
     const password = getPassword();
     if (!password) return;
-
     const res = await fetch("/api/products", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        password,
-        product: { ...product, visible: !product.visible },
-      }),
+      body: JSON.stringify({ password, product: { ...product, visible: !product.visible } }),
     });
-
-    if (res.ok) {
-      onRefresh();
-    } else {
-      alert("Error al actualizar. Vuelve a iniciar sesión.");
-    }
+    if (res.ok) onRefresh();
+    else alert("Error al actualizar. Vuelve a iniciar sesión.");
   };
 
   const confirmDelete = async () => {
     if (!pendingDelete) return;
     const password = getPassword();
     if (!password) { setPendingDelete(null); return; }
-
     const res = await fetch("/api/products", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password, id: pendingDelete.id }),
     });
-
     setPendingDelete(null);
-    if (res.ok) {
-      onRefresh();
-    } else {
-      alert("Error al eliminar. Vuelve a iniciar sesión.");
-    }
+    if (res.ok) onRefresh();
+    else alert("Error al eliminar. Vuelve a iniciar sesión.");
   };
 
   if (products.length === 0) {
     return (
-      <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-        <span className="text-5xl">👗</span>
-        <p className="mt-4 text-gray-400 text-sm">
-          No hay prendas en esta categoría
-        </p>
+      <div className="py-20 border border-cream-300/60 flex flex-col items-start px-8 space-y-4">
+        <div className="w-8 h-px bg-champagne" />
+        <p className="text-sm text-ink/40">No hay prendas en esta categoría.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <div className="border border-cream-300/60 overflow-hidden">
       {/* Table header */}
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b border-gray-100 bg-gray-50/60">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Producto
-        </span>
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Categoría
-        </span>
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Precio
-        </span>
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Estado
-        </span>
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider pr-2">
-          Acciones
-        </span>
+      <div className="hidden lg:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b border-cream-300/60 bg-cream-200">
+        {["Producto", "Categoría", "Precio", "Estado", ""].map((h) => (
+          <span key={h} className="text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/35">
+            {h}
+          </span>
+        ))}
       </div>
 
       {/* Rows */}
-      <div className="divide-y divide-gray-50">
+      <div className="divide-y divide-cream-300/40">
         {products.map((product) => (
           <div
             key={product.id}
-            className={`grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-4 items-center hover:bg-gray-50/50 transition-colors ${
-              !product.visible ? "opacity-60" : ""
+            className={`grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-3 lg:gap-4 px-6 py-4 items-center hover:bg-cream-200/50 transition-colors duration-200 ${
+              !product.visible ? "opacity-50" : ""
             }`}
           >
-            {/* Product */}
+            {/* Producto */}
             <div className="flex items-center gap-3 min-w-0">
-              {/* Thumbnail */}
-              <div className="w-12 h-12 rounded-xl overflow-hidden bg-violet-50 shrink-0 border border-gray-100">
+              <div className="w-10 h-12 overflow-hidden bg-cream-200 shrink-0">
                 {product.image ? (
                   <div className="relative w-full h-full">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={product.image} alt={product.name} fill className="object-cover" />
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-lg">
-                    👗
-                  </div>
+                  <div className="w-full h-full bg-cream-300" />
                 )}
               </div>
-
-              {/* Name + badge */}
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-sm font-semibold text-gray-900 truncate">
-                    {product.name}
-                  </span>
+                <p className="text-sm font-medium text-ink truncate">
+                  {product.name}
                   {product.featured && (
-                    <span className="text-amber-400 text-sm">★</span>
+                    <span className="ml-1.5 text-[10px] tracking-widest text-champagne uppercase">Dest.</span>
                   )}
-                </div>
+                </p>
                 {product.badge && (
-                  <span className="inline-block mt-1 text-xs font-medium bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
-                    {product.badge}
-                  </span>
+                  <span className="text-[9px] tracking-[0.14em] uppercase text-ink/35">{product.badge}</span>
                 )}
               </div>
             </div>
 
-            {/* Category */}
-            <span className="text-sm text-gray-500">
-              {CATEGORY_ICONS[product.category]}{" "}
+            {/* Categoría */}
+            <span className="text-xs text-ink/50 truncate">
               {CATEGORY_LABELS[product.category]}
             </span>
 
-            {/* Price */}
+            {/* Precio */}
             <span
-              className="text-sm font-bold text-gray-900"
+              className="text-sm font-medium text-ink"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
               ${product.price.toLocaleString("es-MX")}
             </span>
 
-            {/* Status */}
-            <div>
-              <button
-                onClick={() => handleToggleVisible(product)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                  product.visible
-                    ? "bg-green-100 text-green-700 hover:bg-green-200"
-                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+            {/* Estado */}
+            <button
+              onClick={() => handleToggleVisible(product)}
+              className="inline-flex items-center gap-1.5 text-[9px] tracking-[0.14em] uppercase transition-colors duration-200 w-fit"
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  product.visible ? "bg-green-500" : "bg-ink/20"
                 }`}
-              >
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    product.visible ? "bg-green-500" : "bg-gray-400"
-                  }`}
-                />
+              />
+              <span className={product.visible ? "text-green-700" : "text-ink/35"}>
                 {product.visible ? "Visible" : "Oculto"}
-              </button>
-            </div>
+              </span>
+            </button>
 
-            {/* Actions */}
+            {/* Acciones */}
             <div className="flex items-center gap-1">
               <button
                 onClick={() => onEdit(product)}
-                className="p-2 text-violet-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                className="p-2 text-ink/25 hover:text-ink transition-colors duration-200"
                 aria-label="Editar"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.25} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
               </button>
               <button
                 onClick={() => setPendingDelete(product)}
-                className="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                className="p-2 text-ink/25 hover:text-red-400 transition-colors duration-200"
                 aria-label="Eliminar"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.25} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                 </svg>
               </button>
             </div>
@@ -223,7 +153,7 @@ export default function ProductList({
         danger
         title="Eliminar prenda"
         message={`¿Eliminar "${pendingDelete?.name}"? Esta acción no se puede deshacer.`}
-        confirmLabel="Sí, eliminar"
+        confirmLabel="Eliminar"
         cancelLabel="Cancelar"
         onConfirm={confirmDelete}
         onCancel={() => setPendingDelete(null)}

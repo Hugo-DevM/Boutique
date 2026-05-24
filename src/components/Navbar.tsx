@@ -12,8 +12,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -27,28 +27,26 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-white shadow-sm border-b border-gray-100"
-          : "bg-white/95 backdrop-blur-sm"
+          ? "bg-cream-100/95 backdrop-blur-md border-b border-cream-300/60"
+          : "bg-cream-100/80 backdrop-blur-sm"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl">👗</span>
+          <Link href="/" className="shrink-0 group">
             <span
-              className="text-xl font-bold tracking-wide"
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              className="text-xl font-semibold tracking-widest text-ink transition-opacity duration-300 group-hover:opacity-70"
+              style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: "0.12em" }}
             >
-              <span className="text-gray-900">Lumi</span>
-              <span className="text-violet-600">ère</span>
+              LUMIÈRE
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-9">
             {navLinks.map((link) => {
               const isActive = link.href.includes("#")
                 ? false
@@ -59,35 +57,35 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative text-sm font-medium tracking-wide uppercase transition-colors ${
+                  className={`relative text-[11px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 ${
                     isActive
-                      ? "text-violet-600"
-                      : "text-gray-500 hover:text-violet-600"
+                      ? "text-champagne"
+                      : "text-espresso-50 hover:text-champagne"
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-violet-600 rounded-full" />
+                    <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-champagne" />
                   )}
                 </Link>
               );
             })}
           </div>
 
-          {/* Cart + Mobile */}
-          <div className="flex items-center gap-2">
+          {/* Cart + Mobile toggle */}
+          <div className="flex items-center gap-1">
             <button
               onClick={toggleCart}
-              className="relative p-2 text-gray-700 hover:text-violet-600 transition-colors"
+              className="relative p-2.5 text-espresso-50 hover:text-champagne transition-colors duration-300"
               aria-label="Carrito de compras"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={1.25}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -96,56 +94,46 @@ export default function Navbar() {
                 />
               </svg>
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-violet-600 text-white text-xs rounded-full flex items-center justify-center font-semibold">
-                  {itemCount > 99 ? "99+" : itemCount}
+                <span className="absolute top-1 right-1 w-4 h-4 bg-champagne text-white text-[9px] rounded-full flex items-center justify-center font-semibold">
+                  {itemCount > 9 ? "9+" : itemCount}
                 </span>
               )}
             </button>
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-violet-600 transition-colors"
+              className="md:hidden p-2.5 text-espresso-50 hover:text-champagne transition-colors duration-300"
               aria-label="Abrir menú"
             >
-              {isMenuOpen ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
-              )}
+              <div className="relative w-5 h-4 flex flex-col justify-between">
+                <span
+                  className={`block h-px bg-current transition-all duration-300 origin-center ${
+                    isMenuOpen ? "rotate-45 translate-y-[7px]" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-px bg-current transition-all duration-300 ${
+                    isMenuOpen ? "opacity-0 scale-x-0" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-px bg-current transition-all duration-300 origin-center ${
+                    isMenuOpen ? "-rotate-45 -translate-y-[9px]" : ""
+                  }`}
+                />
+              </div>
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100 bg-white">
-            {navLinks.map((link) => {
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-500 ${
+            isMenuOpen ? "max-h-80 pb-6" : "max-h-0"
+          }`}
+        >
+          <div className="border-t border-cream-300/60 pt-4 space-y-1">
+            {navLinks.map((link, i) => {
               const isActive = link.href.includes("#")
                 ? false
                 : link.href === "/"
@@ -156,18 +144,17 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block py-3 px-2 text-sm font-medium uppercase tracking-wide transition-colors ${
-                    isActive
-                      ? "text-violet-600 border-l-2 border-violet-600 pl-3"
-                      : "text-gray-500 hover:text-violet-600"
+                  className={`block py-3 text-[11px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 ${
+                    isActive ? "text-champagne" : "text-espresso-50 hover:text-champagne"
                   }`}
+                  style={{ transitionDelay: `${i * 40}ms` }}
                 >
                   {link.label}
                 </Link>
               );
             })}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
