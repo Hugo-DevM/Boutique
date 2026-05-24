@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Product, CATEGORY_LABELS } from "@/types";
 import { useCart } from "@/context/CartContext";
 import ShareButton from "@/components/ShareButton";
+import WishlistButton from "@/components/WishlistButton";
 
 interface ProductCardProps {
   product: Product;
@@ -44,6 +45,13 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-4xl text-cream-300">—</span>
           </div>
         )}
+
+        {/* Wishlist */}
+        <WishlistButton
+          productId={product.id}
+          className="absolute top-2.5 right-2.5 z-10 w-7 h-7 flex items-center justify-center bg-cream-100/70 hover:bg-cream-100 backdrop-blur-sm transition-colors duration-200"
+          iconClassName="w-3.5 h-3.5"
+        />
 
         {/* Badge — minimal */}
         {product.badge && (

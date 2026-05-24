@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lumiereboutique.mx";
 
@@ -60,7 +61,9 @@ export default function RootLayout({
         />
       </head>
       <body style={{ fontFamily: "'Inter', sans-serif" }}>
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <WishlistProvider>{children}</WishlistProvider>
+        </CartProvider>
       </body>
     </html>
   );

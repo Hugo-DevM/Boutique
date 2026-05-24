@@ -9,6 +9,7 @@ import { useCart } from "@/context/CartContext";
 import SizeGuideModal from "@/components/SizeGuideModal";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import ShareButton from "@/components/ShareButton";
+import WishlistButton from "@/components/WishlistButton";
 import { useRecentlyViewed, resolveRecentlyViewed } from "@/hooks/useRecentlyViewed";
 
 export default function ProductPageClient() {
@@ -189,14 +190,21 @@ export default function ProductPageClient() {
             </div>
 
             {/* Precio */}
-            <div className="border-t border-b border-cream-300/60 py-5">
-              <span
-                className="text-3xl font-medium text-ink"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
-              >
-                ${product.price.toLocaleString("es-MX")}
-              </span>
-              <span className="text-xs text-ink/35 ml-2 tracking-widest">MXN</span>
+            <div className="border-t border-b border-cream-300/60 py-5 flex items-center justify-between">
+              <div>
+                <span
+                  className="text-3xl font-medium text-ink"
+                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                >
+                  ${product.price.toLocaleString("es-MX")}
+                </span>
+                <span className="text-xs text-ink/35 ml-2 tracking-widest">MXN</span>
+              </div>
+              <WishlistButton
+                productId={product.id}
+                className="w-9 h-9 flex items-center justify-center border border-cream-300 hover:border-champagne transition-colors duration-200"
+                iconClassName="w-4 h-4"
+              />
             </div>
 
             {/* Tallas */}

@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import SearchOverlay from "@/components/SearchOverlay";
 
 export default function Navbar() {
   const { itemCount, toggleCart } = useCart();
+  const { count: wishlistCount } = useWishlist();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -96,6 +98,22 @@ export default function Navbar() {
                 </svg>
               </button>
 
+              {/* Wishlist */}
+              <Link
+                href="/lista-de-deseos"
+                className="relative p-2.5 text-espresso-50 hover:text-champagne transition-colors duration-300"
+                aria-label="Lista de deseos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.25} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+                {wishlistCount > 0 && (
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-champagne text-white text-[9px] rounded-full flex items-center justify-center font-semibold">
+                    {wishlistCount > 9 ? "9+" : wishlistCount}
+                  </span>
+                )}
+              </Link>
+
               {/* Cart */}
               <button
                 onClick={toggleCart}
@@ -168,6 +186,18 @@ export default function Navbar() {
               >
                 Buscar
               </button>
+              <Link
+                href="/lista-de-deseos"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center justify-between py-3 text-[11px] font-medium tracking-[0.18em] uppercase text-espresso-50 hover:text-champagne transition-colors duration-300"
+              >
+                Lista de deseos
+                {wishlistCount > 0 && (
+                  <span className="text-[9px] bg-champagne text-white px-1.5 py-0.5 font-semibold">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
             </div>
           </div>
         </div>
