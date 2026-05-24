@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product, CATEGORY_LABELS } from "@/types";
 import { useCart } from "@/context/CartContext";
+import SizeGuideModal from "@/components/SizeGuideModal";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,18 +17,18 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
+  const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
 
   useEffect(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
         const found = (data.products ?? []).find((p: Product) => p.id === id);
-        if (!found) {
-          router.push("/tienda");
-          return;
-        }
+        if (!found) { router.push("/tienda"); return; }
         setProduct(found);
         if (found.variants?.length) setSelectedColor(found.variants[0].color);
         setLoading(false);
@@ -47,16 +48,26 @@ export default function ProductPage() {
 
   const gallery = [product.image, ...(product.images ?? [])].filter(Boolean) as string[];
   const hasVariants = product.variants && product.variants.length > 0;
+  const hasSizes = product.sizes && product.sizes.length > 0;
 
   const handleAddToCart = () => {
     if (hasVariants && !selectedColor) return;
-    for (let i = 0; i < quantity; i++) addItem(product, selectedColor);
+    if (hasSizes && !selectedSize) {
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 2000);
+      return;
+    }
+    for (let i = 0; i < quantity; i++) addItem(product, selectedColor, selectedSize);
     setAdded(true);
-    setTimeout(() => {
-      setAdded(false);
-      openCart();
-    }, 800);
+    setTimeout(() => { setAdded(false); openCart(); }, 800);
   };
+
+  const waText = [
+    `Hola, me interesa: ${product.name}`,
+    selectedColor ? `Color: ${selectedColor}` : "",
+    selectedSize ? `Talla: ${selectedSize}` : "",
+    `$${product.price.toLocaleString("es-MX")} MXN`,
+  ].filter(Boolean).join(" — ");
 
   return (
     <div className="pt-16 min-h-[100dvh] bg-cream-100">
@@ -75,7 +86,6 @@ export default function ProductPage() {
 
           {/* ── Galería ───────────────────────────────────── */}
           <div className="space-y-2">
-            {/* Imagen principal */}
             <div className="relative overflow-hidden bg-cream-200" style={{ aspectRatio: "3/4" }}>
               {gallery[activeIndex] ? (
                 <Image
@@ -119,7 +129,6 @@ export default function ProductPage() {
               )}
             </div>
 
-            {/* Thumbnails */}
             {gallery.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {gallery.map((src, i) => (
@@ -139,7 +148,7 @@ export default function ProductPage() {
           </div>
 
           {/* ── Info ──────────────────────────────────────── */}
-          <div className="space-y-8 lg:pt-2">
+          <div className="space-y-7 lg:pt-2">
 
             {/* Categoría */}
             <p className="text-[10px] tracking-[0.22em] uppercase text-champagne">
@@ -172,6 +181,40 @@ export default function ProductPage() {
               </span>
               <span className="text-xs text-ink/35 ml-2 tracking-widest">MXN</span>
             </div>
+
+            {/* Tallas */}
+            {hasSizes && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className={`text-[10px] tracking-[0.18em] uppercase transition-colors duration-200 ${sizeError ? "text-red-400" : "text-ink/40"}`}>
+                    {sizeError ? "Selecciona una talla para continuar" : `Talla${selectedSize ? ` — ${selectedSize}` : ""}`}
+                  </p>
+                  <button
+                    onClick={() => setShowSizeGuide(true)}
+                    className="text-[10px] tracking-[0.14em] uppercase text-ink/25 hover:text-champagne transition-colors duration-200 border-b border-ink/10 pb-0.5"
+                  >
+                    Guía de tallas
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes!.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => { setSelectedSize(size); setSizeError(false); }}
+                      className={`min-w-[3rem] px-3 py-2.5 text-xs font-medium tracking-widest transition-all duration-200 border ${
+                        selectedSize === size
+                          ? "bg-espresso text-cream-100 border-espresso"
+                          : sizeError
+                          ? "border-red-300 text-ink/50 hover:border-espresso hover:text-ink"
+                          : "border-cream-300 text-ink/50 hover:border-espresso hover:text-ink"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Colores */}
             {hasVariants && (
@@ -225,6 +268,8 @@ export default function ProductPage() {
                 className={`w-full flex items-center justify-center gap-2.5 py-4 text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${
                   added
                     ? "bg-ink text-cream-100"
+                    : sizeError
+                    ? "bg-red-400/80 text-white"
                     : "bg-champagne hover:bg-champagne-dark text-espresso"
                 }`}
               >
@@ -235,15 +280,11 @@ export default function ProductPage() {
                     </svg>
                     Agregado
                   </>
-                ) : (
-                  "Agregar al carrito"
-                )}
+                ) : "Agregar al carrito"}
               </button>
 
               <a
-                href={`https://wa.me/523222151711?text=${encodeURIComponent(
-                  `Hola, me interesa: ${product.name}${selectedColor ? ` (Color: ${selectedColor})` : ""} — $${product.price.toLocaleString("es-MX")} MXN`
-                )}`}
+                href={`https://wa.me/523222151711?text=${encodeURIComponent(waText)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2.5 py-4 text-[10px] font-semibold tracking-[0.18em] uppercase border border-cream-300 text-ink/60 hover:border-ink hover:text-ink transition-colors duration-300"
@@ -255,7 +296,7 @@ export default function ProductPage() {
               </a>
             </div>
 
-            {/* Perks — minimalistas */}
+            {/* Perks */}
             <div className="grid grid-cols-2 gap-px bg-cream-300/60 pt-2">
               {[
                 { label: "Envíos rápidos", sub: "A toda la ciudad" },
@@ -272,6 +313,8 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+
+      <SizeGuideModal open={showSizeGuide} onClose={() => setShowSizeGuide(false)} />
     </div>
   );
 }

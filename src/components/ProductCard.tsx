@@ -12,10 +12,13 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
   const hasVariants = product.variants && product.variants.length > 0;
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  // Si tiene tallas o colores, llevar al detalle para que la clienta seleccione
+  const needsDetail = hasVariants || hasSizes;
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!hasVariants) {
+    if (!needsDetail) {
       addItem(product);
     }
   };
@@ -65,7 +68,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleAdd}
             className="w-full py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase text-cream-100 hover:text-champagne transition-colors duration-300"
           >
-            {hasVariants ? "Ver detalles" : "Agregar al carrito"}
+            {needsDetail ? "Ver detalles" : "Agregar al carrito"}
           </button>
         </div>
       </div>

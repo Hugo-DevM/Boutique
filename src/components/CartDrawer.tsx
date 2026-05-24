@@ -20,12 +20,13 @@ export default function CartDrawer() {
     if (items.length === 0) return;
 
     const lines = items
-      .map(
-        (i) =>
-          `• ${i.quantity}x ${i.product.name} — $${(
-            i.product.price * i.quantity
-          ).toLocaleString("es-MX")}`
-      )
+      .map((i) => {
+        const extras = [
+          i.selectedColor ? `Color: ${i.selectedColor}` : "",
+          i.selectedSize ? `Talla: ${i.selectedSize}` : "",
+        ].filter(Boolean).join(", ");
+        return `• ${i.quantity}x ${i.product.name}${extras ? ` (${extras})` : ""} — $${(i.product.price * i.quantity).toLocaleString("es-MX")}`;
+      })
       .join("\n");
 
     const message = `Hola, quiero hacer un pedido en Lumière Boutique:\n\n${lines}\n\nTotal: $${total.toLocaleString("es-MX")} MXN`;
@@ -105,7 +106,7 @@ export default function CartDrawer() {
           ) : (
             <div className="space-y-0 divide-y divide-cream-300/60">
               {items.map((item) => (
-                <div key={`${item.product.id}-${item.selectedColor}`} className="flex gap-4 py-5">
+                <div key={`${item.product.id}-${item.selectedColor}-${item.selectedSize}`} className="flex gap-4 py-5">
                   {/* Image */}
                   <div
                     className="relative shrink-0 overflow-hidden bg-cream-200"
@@ -140,9 +141,10 @@ export default function CartDrawer() {
                     <p className="text-sm text-ink leading-snug line-clamp-2 font-medium">
                       {item.product.name}
                     </p>
-                    {item.selectedColor && (
-                      <p className="text-[10px] tracking-widest uppercase text-ink/35">
-                        {item.selectedColor}
+                    {(item.selectedSize || item.selectedColor) && (
+                      <p className="text-[10px] tracking-widest uppercase text-ink/35 flex gap-2">
+                        {item.selectedSize && <span>Talla {item.selectedSize}</span>}
+                        {item.selectedColor && <span>{item.selectedColor}</span>}
                       </p>
                     )}
                     <p
@@ -157,7 +159,7 @@ export default function CartDrawer() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() =>
-                            updateQuantity(item.product.id, item.quantity - 1, item.selectedColor)
+                            updateQuantity(item.product.id, item.quantity - 1, item.selectedColor, item.selectedSize)
                           }
                           className="w-6 h-6 border border-cream-300 text-ink/50 hover:border-ink hover:text-ink transition-colors duration-200 flex items-center justify-center text-sm"
                         >
@@ -168,7 +170,7 @@ export default function CartDrawer() {
                         </span>
                         <button
                           onClick={() =>
-                            updateQuantity(item.product.id, item.quantity + 1, item.selectedColor)
+                            updateQuantity(item.product.id, item.quantity + 1, item.selectedColor, item.selectedSize)
                           }
                           className="w-6 h-6 border border-cream-300 text-ink/50 hover:border-ink hover:text-ink transition-colors duration-200 flex items-center justify-center text-sm"
                         >
@@ -176,7 +178,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <button
-                        onClick={() => removeItem(item.product.id, item.selectedColor)}
+                        onClick={() => removeItem(item.product.id, item.selectedColor, item.selectedSize)}
                         className="text-[10px] tracking-widest uppercase text-ink/25 hover:text-ink/60 transition-colors duration-200"
                         aria-label="Eliminar"
                       >

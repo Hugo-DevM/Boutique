@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent, ChangeEvent } from "react";
-import { Product, Category, CATEGORY_LABELS, ProductVariant } from "@/types";
+import { Product, Category, CATEGORY_LABELS, ProductVariant, DEFAULT_SIZES } from "@/types";
 
 interface ProductFormProps {
   product: Product | null;
@@ -64,6 +64,8 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
   const [extraImages, setExtraImages] = useState<string[]>(product?.images ?? []);
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [variants, setVariants] = useState<ProductVariant[]>(product?.variants ?? []);
+  const [sizes, setSizes] = useState<string[]>(product?.sizes ?? []);
+  const [customSize, setCustomSize] = useState("");
   const [customColor, setCustomColor] = useState("");
   const [customHex, setCustomHex] = useState("#000000");
   const [saving, setSaving] = useState(false);
@@ -114,6 +116,19 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
   const removeExtraImage = (index: number) =>
     setExtraImages((prev) => prev.filter((_, i) => i !== index));
 
+  const toggleSize = (size: string) => {
+    setSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
+  };
+
+  const addCustomSize = () => {
+    const s = customSize.trim().toUpperCase();
+    if (!s || sizes.includes(s)) return;
+    setSizes((prev) => [...prev, s]);
+    setCustomSize("");
+  };
+
   const toggleVariant = (v: ProductVariant) => {
     setVariants((prev) => {
       const exists = prev.find((x) => x.colorHex === v.colorHex);
@@ -153,6 +168,7 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
           visible: form.visible,
           featured: form.featured,
           variants: variants.length > 0 ? variants : undefined,
+          sizes: sizes.length > 0 ? sizes : undefined,
         },
       }),
     });
@@ -314,6 +330,71 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
           <div>
             <label className={labelCls}>Badge <span className="text-ink/25 normal-case tracking-normal text-[10px]">(opcional)</span></label>
             <input type="text" name="badge" value={form.badge} onChange={handleChange} placeholder="Ej: Nuevo, Sale, Últimas unidades" className={inputCls} />
+          </div>
+
+          {/* Tallas */}
+          <div>
+            <label className={labelCls}>
+              Tallas disponibles <span className="text-ink/25 normal-case tracking-normal text-[10px]">(opcionales)</span>
+            </label>
+
+            {/* Tallas predefinidas */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {DEFAULT_SIZES.map((size) => {
+                const active = sizes.includes(size);
+                return (
+                  <button
+                    type="button"
+                    key={size}
+                    onClick={() => toggleSize(size)}
+                    className={`min-w-[3rem] px-3 py-2 text-xs font-medium tracking-widest transition-all duration-200 border ${
+                      active
+                        ? "bg-espresso text-cream-100 border-espresso"
+                        : "border-cream-300 text-ink/50 hover:border-espresso hover:text-ink"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Talla personalizada */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={customSize}
+                onChange={(e) => setCustomSize(e.target.value)}
+                placeholder="Talla personalizada (ej: XXXL, 38)"
+                className={`${inputCls} flex-1`}
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomSize())}
+              />
+              <button
+                type="button"
+                onClick={addCustomSize}
+                className="px-4 py-2 bg-cream-200 hover:bg-cream-300 text-ink/60 hover:text-ink text-[10px] tracking-[0.14em] uppercase transition-colors duration-200 whitespace-nowrap"
+              >
+                Agregar
+              </button>
+            </div>
+
+            {/* Tallas seleccionadas */}
+            {sizes.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {sizes.map((size) => (
+                  <span key={size} className="inline-flex items-center gap-1.5 text-[10px] tracking-wide text-ink/60 border border-cream-300 px-2.5 py-1">
+                    {size}
+                    <button
+                      type="button"
+                      onClick={() => setSizes((prev) => prev.filter((s) => s !== size))}
+                      className="text-ink/25 hover:text-ink/60 ml-0.5 transition-colors duration-200"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Variantes de color */}

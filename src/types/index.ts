@@ -26,23 +26,27 @@ export interface ProductVariant {
   colorHex: string; // e.g. "#000000"
 }
 
+export const DEFAULT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
-  image: string;          // imagen principal (retrocompatibilidad)
-  images?: string[];      // imágenes adicionales
+  image: string;
+  images?: string[];
   category: Category;
   visible: boolean;
   featured?: boolean;
   badge?: string;
   variants?: ProductVariant[]; // variantes de color
+  sizes?: string[];            // tallas disponibles e.g. ["S","M","L"]
   createdAt: string;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
-  selectedColor?: string; // color seleccionado (nombre)
+  selectedColor?: string;
+  selectedSize?: string;
 }

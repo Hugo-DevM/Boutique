@@ -25,6 +25,8 @@ export default function TiendaPage() {
     const params = new URLSearchParams(window.location.search);
     const cat = params.get("categoria") as Category | null;
     if (cat) setActiveCategory(cat);
+    const buscar = params.get("buscar");
+    if (buscar) setSearch(buscar);
   }, []);
 
   const visible = products
