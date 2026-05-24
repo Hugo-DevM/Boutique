@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product, CATEGORY_LABELS } from "@/types";
 import { useCart } from "@/context/CartContext";
+import ShareButton from "@/components/ShareButton";
 
 interface ProductCardProps {
   product: Product;
@@ -62,14 +63,20 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="absolute inset-0 bg-espresso/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Quick action on hover */}
-        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-espresso/90 backdrop-blur-sm"
+        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-espresso/90 backdrop-blur-sm flex items-stretch"
           style={{ transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)" }}>
           <button
             onClick={handleAdd}
-            className="w-full py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase text-cream-100 hover:text-champagne transition-colors duration-300"
+            className="flex-1 py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase text-cream-100 hover:text-champagne transition-colors duration-300"
           >
             {needsDetail ? "Ver detalles" : "Agregar al carrito"}
           </button>
+          <ShareButton
+            url={`/producto/${product.id}`}
+            title={product.name}
+            className="shrink-0 px-3.5 border-l border-cream-100/10 text-cream-100/50 hover:text-champagne transition-colors duration-300 flex items-center justify-center"
+            iconClassName="w-3.5 h-3.5"
+          />
         </div>
       </div>
 

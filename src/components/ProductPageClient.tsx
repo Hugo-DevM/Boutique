@@ -8,6 +8,7 @@ import { Product, CATEGORY_LABELS } from "@/types";
 import { useCart } from "@/context/CartContext";
 import SizeGuideModal from "@/components/SizeGuideModal";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import ShareButton from "@/components/ShareButton";
 import { useRecentlyViewed, resolveRecentlyViewed } from "@/hooks/useRecentlyViewed";
 
 export default function ProductPageClient() {
@@ -113,6 +114,13 @@ export default function ProductPageClient() {
                   {product.badge}
                 </span>
               )}
+
+              <ShareButton
+                url={`/producto/${product.id}`}
+                title={product.name}
+                className="absolute top-3 right-3 w-8 h-8 bg-cream-100/80 hover:bg-cream-100 backdrop-blur-sm flex items-center justify-center text-ink/50 hover:text-ink transition-colors duration-200"
+                iconClassName="w-4 h-4"
+              />
 
               {gallery.length > 1 && (
                 <>
