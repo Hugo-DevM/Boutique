@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProductCard from "@/components/ProductCard";
 import CategoryFilter, { PriceRange, PRICE_RANGES } from "@/components/CategoryFilter";
 import { Product, Category } from "@/types";
+import { useDataRefresh } from "@/hooks/useDataRefresh";
 
 export default function TiendaPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,7 +13,7 @@ export default function TiendaPage() {
   const [search, setSearch] = useState("");
   const [priceRange, setPriceRange] = useState<PriceRange>("all");
 
-  useEffect(() => {
+  const fetchProducts = useCallback(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
@@ -21,6 +22,11 @@ export default function TiendaPage() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  // Re-fetch silently when the user returns to this tab
+  useDataRefresh(fetchProducts, { intervalMs: 5 * 60_000 });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

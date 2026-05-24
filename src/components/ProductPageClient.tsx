@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import ShareButton from "@/components/ShareButton";
 import WishlistButton from "@/components/WishlistButton";
 import { useRecentlyViewed, resolveRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import { useDataRefresh } from "@/hooks/useDataRefresh";
 
 export default function ProductPageClient() {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +32,7 @@ export default function ProductPageClient() {
   const { otherIds } = useRecentlyViewed(id);
   const recentProducts = resolveRecentlyViewed(otherIds, allProducts);
 
-  useEffect(() => {
+  const fetchProduct = useCallback(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
@@ -40,11 +41,16 @@ export default function ProductPageClient() {
         if (!found) { router.push("/tienda"); return; }
         setProduct(found);
         setAllProducts(list);
-        if (found.variants?.length) setSelectedColor(found.variants[0].color);
+        if (found.variants?.length) setSelectedColor((prev) => prev ?? found.variants![0].color);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [id, router]);
+
+  useEffect(() => { fetchProduct(); }, [fetchProduct]);
+
+  // Re-fetch silently cuando el usuario vuelve al tab (stock, precio, etc.)
+  useDataRefresh(fetchProduct);
 
   if (loading) {
     return (

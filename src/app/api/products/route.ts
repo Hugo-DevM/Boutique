@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getProductsFromGitHub, saveProductsToGitHub } from "@/lib/github";
 import { Product } from "@/types";
 import { deleteProductImages } from "@/lib/cloudinary";
@@ -77,6 +78,8 @@ export async function POST(request: Request) {
     };
 
     await saveProducts([...products, newProduct], sha);
+    revalidatePath("/tienda");
+    revalidatePath("/");
     return NextResponse.json({ product: newProduct });
   } catch (err) {
     console.error("[POST /api/products]", err);
@@ -100,6 +103,9 @@ export async function PUT(request: Request) {
     );
 
     await saveProducts(updated, sha);
+    revalidatePath("/tienda");
+    revalidatePath("/");
+    revalidatePath(`/producto/${product.id}`);
     return NextResponse.json({ product });
   } catch (err) {
     console.error("[PUT /api/products]", err);
@@ -122,6 +128,9 @@ export async function DELETE(request: Request) {
     const filtered = products.filter((p: Product) => p.id !== id);
 
     await saveProducts(filtered, sha);
+    revalidatePath("/tienda");
+    revalidatePath("/");
+    if (target) revalidatePath(`/producto/${target.id}`);
 
     // Delete images from Cloudinary (non-blocking — don't fail if this errors)
     if (target?.image) {

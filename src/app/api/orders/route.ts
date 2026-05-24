@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getProducts } from "@/lib/products";
 import { saveProductsToGitHub } from "@/lib/github";
 import { Product } from "@/types";
@@ -52,6 +53,8 @@ export async function PATCH(request: Request) {
       writeLocal(updated);
     }
 
+    revalidatePath("/tienda");
+    revalidatePath(`/producto/${productId}`);
     const product = updated.find((p: Product) => p.id === productId);
     return NextResponse.json({ stock: product?.stock });
   } catch (err) {
