@@ -2,11 +2,23 @@
 
 import { Category, CATEGORY_LABELS } from "@/types";
 
+export type PriceRange = "all" | "u500" | "500_1000" | "1000_2000" | "o2000";
+
+export const PRICE_RANGES: { key: PriceRange; label: string; min: number; max: number }[] = [
+  { key: "all",       label: "Cualquier precio", min: 0,    max: Infinity },
+  { key: "u500",      label: "Menos de $500",    min: 0,    max: 499 },
+  { key: "500_1000",  label: "$500 – $1,000",    min: 500,  max: 1000 },
+  { key: "1000_2000", label: "$1,000 – $2,000",  min: 1000, max: 2000 },
+  { key: "o2000",     label: "Más de $2,000",    min: 2001, max: Infinity },
+];
+
 interface CategoryFilterProps {
   activeCategory: Category | "all";
   onCategoryChange: (cat: Category | "all") => void;
   search: string;
   onSearchChange: (q: string) => void;
+  priceRange: PriceRange;
+  onPriceRangeChange: (r: PriceRange) => void;
 }
 
 const ALL_CATEGORIES: (Category | "all")[] = [
@@ -22,6 +34,8 @@ export default function CategoryFilter({
   onCategoryChange,
   search,
   onSearchChange,
+  priceRange,
+  onPriceRangeChange,
 }: CategoryFilterProps) {
   return (
     <div className="space-y-5 mb-10">
@@ -63,7 +77,6 @@ export default function CategoryFilter({
         {ALL_CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat;
           const label = cat === "all" ? "Todas" : CATEGORY_LABELS[cat as Category];
-
           return (
             <button
               key={cat}
@@ -75,6 +88,26 @@ export default function CategoryFilter({
               }`}
             >
               {label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Price range filters */}
+      <div className="flex flex-wrap items-center gap-px bg-cream-300/50">
+        {PRICE_RANGES.map((r) => {
+          const isActive = priceRange === r.key;
+          return (
+            <button
+              key={r.key}
+              onClick={() => onPriceRangeChange(r.key)}
+              className={`px-5 py-2 text-[10px] font-medium tracking-[0.14em] uppercase transition-colors duration-300 ${
+                isActive
+                  ? "bg-champagne text-espresso"
+                  : "bg-cream-100 text-ink/40 hover:bg-cream-200 hover:text-ink"
+              }`}
+            >
+              {r.label}
             </button>
           );
         })}

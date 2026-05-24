@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
-import CategoryFilter from "@/components/CategoryFilter";
+import CategoryFilter, { PriceRange, PRICE_RANGES } from "@/components/CategoryFilter";
 import { Product, Category } from "@/types";
 
 export default function TiendaPage() {
@@ -10,6 +10,7 @@ export default function TiendaPage() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");
+  const [priceRange, setPriceRange] = useState<PriceRange>("all");
 
   useEffect(() => {
     fetch("/api/products")
@@ -29,9 +30,12 @@ export default function TiendaPage() {
     if (buscar) setSearch(buscar);
   }, []);
 
+  const activePriceRange = PRICE_RANGES.find((r) => r.key === priceRange)!;
+
   const visible = products
     .filter((p) => p.visible)
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
+    .filter((p) => p.price >= activePriceRange.min && p.price <= activePriceRange.max)
     .filter(
       (p) =>
         !search ||
@@ -66,6 +70,8 @@ export default function TiendaPage() {
           onCategoryChange={setActiveCategory}
           search={search}
           onSearchChange={setSearch}
+          priceRange={priceRange}
+          onPriceRangeChange={setPriceRange}
         />
 
         {loading ? (
@@ -105,6 +111,7 @@ export default function TiendaPage() {
               onClick={() => {
                 setSearch("");
                 setActiveCategory("all");
+                setPriceRange("all");
               }}
               className="text-[10px] tracking-[0.18em] uppercase text-champagne hover:text-champagne-dark transition-colors duration-300 border-b border-champagne/40 pb-0.5"
             >
