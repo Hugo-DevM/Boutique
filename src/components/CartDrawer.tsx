@@ -19,18 +19,41 @@ export default function CartDrawer() {
   const handleWhatsApp = () => {
     if (items.length === 0) return;
 
-    const lines = items
-      .map((i) => {
-        const extras = [
-          i.selectedColor ? `Color: ${i.selectedColor}` : "",
-          i.selectedSize ? `Talla: ${i.selectedSize}` : "",
-        ].filter(Boolean).join(", ");
-        return `• ${i.quantity}x ${i.product.name}${extras ? ` (${extras})` : ""} — $${(i.product.price * i.quantity).toLocaleString("es-MX")}`;
-      })
-      .join("\n");
-
-    const message = `Hola, quiero hacer un pedido en Lumière Boutique:\n\n${lines}\n\nTotal: $${total.toLocaleString("es-MX")} MXN`;
     const waNumber = process.env.NEXT_PUBLIC_WA_NUMBER ?? "523222151711";
+
+    // Order number: LM-YYMMDD-XXXX
+    const now = new Date();
+    const datePart = now.toISOString().slice(2, 10).replace(/-/g, "");
+    const rand = String(Math.floor(1000 + Math.random() * 9000));
+    const orderNumber = `LM-${datePart}-${rand}`;
+
+    const divider = "―――――――――――――――――――";
+
+    const lines = items.map((i) => {
+      const subtotal = i.product.price * i.quantity;
+      const attrs: string[] = [];
+      if (i.selectedColor) attrs.push(`Color: ${i.selectedColor}`);
+      if (i.selectedSize)  attrs.push(`Talla: ${i.selectedSize}`);
+
+      return [
+        `*${i.quantity}x ${i.product.name}*`,
+        attrs.length ? `   ${attrs.join(" · ")}` : "",
+        `   $${subtotal.toLocaleString("es-MX")} MXN`,
+      ].filter(Boolean).join("\n");
+    });
+
+    const message = [
+      `Hola, me gustaría hacer el siguiente pedido:`,
+      ``,
+      `*Pedido ${orderNumber}*`,
+      divider,
+      lines.join("\n\n"),
+      divider,
+      `*Total: $${total.toLocaleString("es-MX")} MXN*`,
+      ``,
+      `Quedo en espera de confirmación.`,
+    ].join("\n");
+
     window.open(
       `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`,
       "_blank"
