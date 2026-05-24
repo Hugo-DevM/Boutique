@@ -218,32 +218,45 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
               Imagen principal <span className="text-red-400">*</span>
             </label>
             <input id="image-upload" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onChange={handleImageUpload} disabled={uploading} className="hidden" />
-            <label
-              htmlFor="image-upload"
-              className={`group relative flex flex-col items-center justify-center w-full border border-dashed cursor-pointer transition-colors duration-200 overflow-hidden ${
-                uploading ? "border-champagne/50 cursor-wait" : "border-cream-300 hover:border-champagne"
-              }`}
-              style={{ minHeight: 160 }}
-            >
-              {localPreview ? (
-                <>
+            {/* Preview 3:4 + drop zone lado a lado cuando hay imagen */}
+            {localPreview ? (
+              <div className="flex gap-3">
+                {/* Preview en ratio 3:4 — igual que las cards de la tienda */}
+                <div className="relative overflow-hidden bg-cream-200 shrink-0 w-40" style={{ aspectRatio: "3/4" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={localPreview} alt="Preview" className="w-full h-48 object-cover" />
+                  <img src={localPreview} alt="Preview" className="w-full h-full object-cover" />
                   {uploading && (
                     <div className="absolute inset-0 bg-cream-100/80 flex flex-col items-center justify-center gap-2">
                       <div className="w-5 h-5 border border-champagne border-t-transparent rounded-full animate-spin" />
                       <p className="text-[10px] tracking-widest uppercase text-champagne">Subiendo...</p>
                     </div>
                   )}
-                  {!uploading && (
-                    <div className="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/30 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <span className="text-[10px] tracking-[0.16em] uppercase text-cream-100 bg-espresso/70 px-4 py-2">
-                        Cambiar imagen
-                      </span>
-                    </div>
-                  )}
-                </>
-              ) : (
+                </div>
+
+                {/* Zona de cambio */}
+                <label
+                  htmlFor="image-upload"
+                  className={`group flex-1 flex flex-col items-center justify-center border border-dashed cursor-pointer transition-colors duration-200 ${
+                    uploading ? "border-champagne/50 cursor-wait" : "border-cream-300 hover:border-champagne"
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1} className="w-7 h-7 text-ink/20 mb-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <p className="text-[10px] tracking-[0.14em] uppercase text-ink/35 text-center px-3">
+                    Cambiar imagen
+                  </p>
+                  <p className="text-[9px] text-ink/20 mt-1">JPG, PNG o WebP</p>
+                </label>
+              </div>
+            ) : (
+              <label
+                htmlFor="image-upload"
+                className={`group relative flex flex-col items-center justify-center w-full border border-dashed cursor-pointer transition-colors duration-200 overflow-hidden ${
+                  uploading ? "border-champagne/50 cursor-wait" : "border-cream-300 hover:border-champagne"
+                }`}
+                style={{ minHeight: 160 }}
+              >
                 <div className="flex flex-col items-center gap-3 py-10 px-6 text-center">
                   {uploading ? (
                     <>
@@ -260,8 +273,8 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
                     </>
                   )}
                 </div>
-              )}
-            </label>
+              </label>
+            )}
           </div>
 
           {/* Galería adicional */}
