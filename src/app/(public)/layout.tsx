@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import WhatsAppFAB from "@/components/WhatsAppFAB";
 
 export default function PublicLayout({
   children,
@@ -13,6 +14,7 @@ export default function PublicLayout({
       <CartDrawer />
       <main>{children}</main>
       <Footer />
+      <WhatsAppFAB />
     </>
   );
 }
