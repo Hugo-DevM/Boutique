@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Product, CATEGORY_LABELS } from "@/types";
 import { useCart } from "@/context/CartContext";
 import SizeGuideModal from "@/components/SizeGuideModal";
+import RecentlyViewed from "@/components/RecentlyViewed";
+import { useRecentlyViewed, resolveRecentlyViewed } from "@/hooks/useRecentlyViewed";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,7 @@ export default function ProductPage() {
   const { addItem, openCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
@@ -23,13 +26,18 @@ export default function ProductPage() {
   const [sizeError, setSizeError] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
+  const { otherIds } = useRecentlyViewed(id);
+  const recentProducts = resolveRecentlyViewed(otherIds, allProducts);
+
   useEffect(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
-        const found = (data.products ?? []).find((p: Product) => p.id === id);
+        const list: Product[] = data.products ?? [];
+        const found = list.find((p: Product) => p.id === id);
         if (!found) { router.push("/tienda"); return; }
         setProduct(found);
+        setAllProducts(list);
         if (found.variants?.length) setSelectedColor(found.variants[0].color);
         setLoading(false);
       })
@@ -313,6 +321,8 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+
+      <RecentlyViewed products={recentProducts} />
 
       <SizeGuideModal open={showSizeGuide} onClose={() => setShowSizeGuide(false)} />
     </div>
