@@ -1,3 +1,66 @@
 {
-  "products": []
+  "products": [
+    {
+      "id": "80acbbcc-6125-4357-8c4d-189c156fb2a8",
+      "name": "Camisa Blanca",
+      "description": "Camisa blanca BitCaven",
+      "price": 299,
+      "image": "https://res.cloudinary.com/dsqzm6bkn/image/upload/v1779644827/lumiere_boutique/productos/80acbbcc-6125-4357-8c4d-189c156fb2a8/ehylmtcy8anxcc8pgnce.jpg",
+      "images": [
+        "https://res.cloudinary.com/dsqzm6bkn/image/upload/v1779644848/lumiere_boutique/productos/80acbbcc-6125-4357-8c4d-189c156fb2a8/t7j6zf1hrldf6bw9uvkp.jpg",
+        "https://res.cloudinary.com/dsqzm6bkn/image/upload/v1779644849/lumiere_boutique/productos/80acbbcc-6125-4357-8c4d-189c156fb2a8/gjk5kioyrknwi4xggp9m.jpg"
+      ],
+      "category": "sale",
+      "visible": true,
+      "featured": true,
+      "variants": [
+        {
+          "color": "Blanco",
+          "colorHex": "#FFFFFF"
+        }
+      ],
+      "sizes": [
+        "XS",
+        "S",
+        "M"
+      ],
+      "createdAt": "2026-05-24T17:48:29.879Z"
+    },
+    {
+      "id": "2409a303-75bd-4218-98cc-348aba99d5f8",
+      "name": "Camisas Blook",
+      "description": "Camisas de varios colores marca BLOOK",
+      "price": 199,
+      "image": "https://res.cloudinary.com/dsqzm6bkn/image/upload/v1779645266/lumiere_boutique/productos/2409a303-75bd-4218-98cc-348aba99d5f8/pzbfhglwbbgoh1b2whwn.jpg",
+      "images": [],
+      "category": "sale",
+      "visible": true,
+      "featured": true,
+      "variants": [
+        {
+          "color": "Blanco",
+          "colorHex": "#FFFFFF"
+        },
+        {
+          "color": "Negro",
+          "colorHex": "#000000"
+        },
+        {
+          "color": "Cian",
+          "colorHex": "#71fedb"
+        },
+        {
+          "color": "Gris",
+          "colorHex": "#6B7280"
+        }
+      ],
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "createdAt": "2026-05-24T17:55:35.680Z"
+    }
+  ]
 }
