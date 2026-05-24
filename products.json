@@ -25,6 +25,42 @@
         "M"
       ],
       "createdAt": "2026-05-24T17:48:29.879Z"
+    },
+    {
+      "id": "2409a303-75bd-4218-98cc-348aba99d5f8",
+      "name": "Camisas Blook",
+      "description": "Camisas de varios colores marca BLOOK",
+      "price": 199,
+      "image": "https://res.cloudinary.com/dsqzm6bkn/image/upload/v1779645266/lumiere_boutique/productos/2409a303-75bd-4218-98cc-348aba99d5f8/pzbfhglwbbgoh1b2whwn.jpg",
+      "images": [],
+      "category": "sale",
+      "visible": true,
+      "featured": true,
+      "variants": [
+        {
+          "color": "Blanco",
+          "colorHex": "#FFFFFF"
+        },
+        {
+          "color": "Negro",
+          "colorHex": "#000000"
+        },
+        {
+          "color": "Cian",
+          "colorHex": "#71fedb"
+        },
+        {
+          "color": "Gris",
+          "colorHex": "#6B7280"
+        }
+      ],
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "createdAt": "2026-05-24T17:55:35.680Z"
     }
   ]
 }
