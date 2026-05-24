@@ -2,12 +2,42 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lumiereboutique.mx";
+
 export const metadata: Metadata = {
-  title: "Lumière Boutique | Moda Femenina en Puerto Vallarta",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Lumière Boutique | Moda Femenina en Puerto Vallarta",
+    template: "%s | Lumière Boutique",
+  },
   description:
     "Moda femenina sofisticada con estilo, elegancia y actitud para cada ocasión en Puerto Vallarta.",
   keywords:
     "boutique de ropa Puerto Vallarta, moda femenina, vestidos elegantes, ropa en tendencia Puerto Vallarta",
+  openGraph: {
+    type: "website",
+    siteName: "Lumière Boutique",
+    locale: "es_MX",
+    url: SITE_URL,
+    title: "Lumière Boutique | Moda Femenina en Puerto Vallarta",
+    description:
+      "Moda femenina sofisticada con estilo, elegancia y actitud para cada ocasión en Puerto Vallarta.",
+    images: [
+      {
+        url: `${SITE_URL}/og-default.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Lumière Boutique — Moda Femenina Puerto Vallarta",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lumière Boutique | Moda Femenina en Puerto Vallarta",
+    description:
+      "Moda femenina sofisticada con estilo, elegancia y actitud para cada ocasión en Puerto Vallarta.",
+    images: [`${SITE_URL}/og-default.jpg`],
+  },
 };
 
 export default function RootLayout({
