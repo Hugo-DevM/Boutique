@@ -15,12 +15,13 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
   const hasVariants = product.variants && product.variants.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
-  // Si tiene tallas o colores, llevar al detalle para que la clienta seleccione
   const needsDetail = hasVariants || hasSizes;
+  const isOutOfStock = product.stock !== undefined && product.stock === 0;
+  const isLowStock = product.stock !== undefined && product.stock > 0 && product.stock <= 5;
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!needsDetail) {
+    if (!needsDetail && !isOutOfStock) {
       addItem(product);
     }
   };
@@ -54,11 +55,19 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
 
         {/* Badge — minimal */}
-        {product.badge && (
+        {isOutOfStock ? (
+          <span className="absolute top-3 left-3 text-[9px] font-semibold tracking-[0.15em] uppercase bg-ink/60 text-cream-100/70 px-2.5 py-1">
+            Agotado
+          </span>
+        ) : isLowStock ? (
+          <span className="absolute top-3 left-3 text-[9px] font-semibold tracking-[0.15em] uppercase bg-champagne text-espresso px-2.5 py-1">
+            {product.stock === 1 ? "Última pieza" : `${product.stock} piezas`}
+          </span>
+        ) : product.badge ? (
           <span className="absolute top-3 left-3 text-[9px] font-semibold tracking-[0.15em] uppercase bg-espresso text-cream-100 px-2.5 py-1">
             {product.badge}
           </span>
-        )}
+        ) : null}
 
         {/* Photo count */}
         {product.images && product.images.length > 0 && (
@@ -75,9 +84,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           style={{ transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)" }}>
           <button
             onClick={handleAdd}
-            className="flex-1 py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase text-cream-100 hover:text-champagne transition-colors duration-300"
+            disabled={isOutOfStock}
+            className="flex-1 py-3.5 text-[10px] font-semibold tracking-[0.18em] uppercase text-cream-100 hover:text-champagne transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {needsDetail ? "Ver detalles" : "Agregar al carrito"}
+            {isOutOfStock ? "Agotado" : needsDetail ? "Ver detalles" : "Agregar al carrito"}
           </button>
           <ShareButton
             url={`/producto/${product.id}`}

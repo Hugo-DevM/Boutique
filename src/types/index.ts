@@ -41,6 +41,7 @@ export interface Product {
   badge?: string;
   variants?: ProductVariant[]; // variantes de color
   sizes?: string[];            // tallas disponibles e.g. ["S","M","L"]
+  stock?: number;              // undefined = sin límite; 0 = agotado
   createdAt: string;
 }
 

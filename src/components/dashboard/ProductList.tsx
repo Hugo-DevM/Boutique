@@ -5,6 +5,66 @@ import Image from "next/image";
 import { Product, CATEGORY_LABELS } from "@/types";
 import ConfirmDialog from "./ConfirmDialog";
 
+function StockControls({ product, onRefresh }: { product: Product; onRefresh: () => void }) {
+  const [loading, setLoading] = useState(false);
+  const [localStock, setLocalStock] = useState(product.stock);
+
+  if (localStock === undefined) {
+    return <span className="text-[9px] tracking-[0.14em] uppercase text-ink/20">—</span>;
+  }
+
+  const adjust = async (delta: number) => {
+    const newStock = Math.max(0, localStock + delta);
+    setLocalStock(newStock); // optimistic
+    setLoading(true);
+    try {
+      const password = sessionStorage.getItem("lumiere_password") ?? "";
+      await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id, delta, password }),
+      });
+      onRefresh();
+    } catch {
+      setLocalStock(localStock); // revert
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        onClick={() => adjust(-1)}
+        disabled={loading || localStock === 0}
+        className="w-5 h-5 border border-cream-300 text-ink/40 hover:border-ink hover:text-ink disabled:opacity-25 disabled:cursor-not-allowed transition-colors duration-150 flex items-center justify-center text-xs leading-none"
+        title="Venta confirmada (-1)"
+      >
+        −
+      </button>
+      <span className={`text-[10px] font-semibold tracking-[0.12em] w-8 text-center tabular-nums ${
+        localStock === 0
+          ? "text-red-400"
+          : localStock <= 3
+          ? "text-amber-500"
+          : localStock <= 5
+          ? "text-champagne-dark"
+          : "text-green-600"
+      }`}>
+        {localStock === 0 ? "—" : localStock}
+      </span>
+      <button
+        onClick={() => adjust(+1)}
+        disabled={loading}
+        className="w-5 h-5 border border-cream-300 text-ink/40 hover:border-ink hover:text-ink disabled:opacity-25 disabled:cursor-not-allowed transition-colors duration-150 flex items-center justify-center text-xs leading-none"
+        title="Agregar unidad (+1)"
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
 interface ProductListProps {
   products: Product[];
   onEdit: (product: Product) => void;
@@ -54,8 +114,8 @@ export default function ProductList({ products, onEdit, onRefresh }: ProductList
   return (
     <div className="border border-cream-300/60 overflow-hidden">
       {/* Table header */}
-      <div className="hidden lg:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b border-cream-300/60 bg-cream-200">
-        {["Producto", "Categoría", "Precio", "Estado", ""].map((h) => (
+      <div className="hidden lg:grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-4 px-6 py-3 border-b border-cream-300/60 bg-cream-200">
+        {["Producto", "Categoría", "Precio", "Stock", "Estado", ""].map((h) => (
           <span key={h} className="text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/35">
             {h}
           </span>
@@ -67,7 +127,7 @@ export default function ProductList({ products, onEdit, onRefresh }: ProductList
         {products.map((product) => (
           <div
             key={product.id}
-            className={`grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-3 lg:gap-4 px-6 py-4 items-center hover:bg-cream-200/50 transition-colors duration-200 ${
+            className={`grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-3 lg:gap-4 px-6 py-4 items-center hover:bg-cream-200/50 transition-colors duration-200 ${
               !product.visible ? "opacity-50" : ""
             }`}
           >
@@ -107,6 +167,9 @@ export default function ProductList({ products, onEdit, onRefresh }: ProductList
             >
               ${product.price.toLocaleString("es-MX")}
             </span>
+
+            {/* Stock */}
+            <StockControls product={product} onRefresh={onRefresh} />
 
             {/* Estado */}
             <button

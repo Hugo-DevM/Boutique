@@ -13,6 +13,7 @@ const EMPTY_FORM = {
   name: "",
   description: "",
   price: "",
+  stock: "",
   image: "",
   category: "sale" as Category,
   badge: "",
@@ -50,6 +51,7 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
           name: product.name,
           description: product.description,
           price: String(product.price),
+          stock: product.stock !== undefined ? String(product.stock) : "",
           image: product.image,
           category: product.category,
           badge: product.badge ?? "",
@@ -169,6 +171,7 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
           featured: form.featured,
           variants: variants.length > 0 ? variants : undefined,
           sizes: sizes.length > 0 ? sizes : undefined,
+          stock: form.stock !== "" ? parseInt(form.stock, 10) : undefined,
         },
       }),
     });
@@ -323,6 +326,44 @@ export default function ProductForm({ product, onClose, onSaved }: ProductFormPr
                   <option key={key} value={key}>{label}</option>
                 ))}
               </select>
+            </div>
+          </div>
+
+          {/* Stock */}
+          <div>
+            <label className={labelCls}>
+              Stock <span className="text-ink/25 normal-case tracking-normal text-[10px]">(dejar vacío = sin límite)</span>
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                name="stock"
+                value={form.stock}
+                onChange={handleChange}
+                min={0}
+                step={1}
+                placeholder="Ej: 10"
+                className={`${inputCls} max-w-[10rem]`}
+              />
+              {form.stock !== "" && (
+                <span className={`text-[10px] tracking-[0.14em] uppercase font-medium ${
+                  Number(form.stock) === 0
+                    ? "text-red-400"
+                    : Number(form.stock) <= 3
+                    ? "text-amber-500"
+                    : Number(form.stock) <= 5
+                    ? "text-champagne"
+                    : "text-green-600"
+                }`}>
+                  {Number(form.stock) === 0
+                    ? "Agotado"
+                    : Number(form.stock) <= 3
+                    ? "Stock crítico"
+                    : Number(form.stock) <= 5
+                    ? "Stock bajo"
+                    : "Disponible"}
+                </span>
+              )}
             </div>
           </div>
 

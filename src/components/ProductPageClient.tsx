@@ -59,8 +59,11 @@ export default function ProductPageClient() {
   const gallery = [product.image, ...(product.images ?? [])].filter(Boolean) as string[];
   const hasVariants = product.variants && product.variants.length > 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
+  const isOutOfStock = product.stock !== undefined && product.stock === 0;
+  const isLowStock = product.stock !== undefined && product.stock > 0 && product.stock <= 5;
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     if (hasVariants && !selectedColor) return;
     if (hasSizes && !selectedSize) {
       setSizeError(true);
@@ -191,14 +194,24 @@ export default function ProductPageClient() {
 
             {/* Precio */}
             <div className="border-t border-b border-cream-300/60 py-5 flex items-center justify-between">
-              <div>
-                <span
-                  className="text-3xl font-medium text-ink"
-                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  ${product.price.toLocaleString("es-MX")}
-                </span>
-                <span className="text-xs text-ink/35 ml-2 tracking-widest">MXN</span>
+              <div className="space-y-1">
+                <div>
+                  <span
+                    className="text-3xl font-medium text-ink"
+                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                  >
+                    ${product.price.toLocaleString("es-MX")}
+                  </span>
+                  <span className="text-xs text-ink/35 ml-2 tracking-widest">MXN</span>
+                </div>
+                {isOutOfStock && (
+                  <p className="text-[10px] tracking-[0.16em] uppercase text-red-400 font-medium">Agotado</p>
+                )}
+                {isLowStock && (
+                  <p className="text-[10px] tracking-[0.16em] uppercase text-champagne font-medium">
+                    {product.stock === 1 ? "Última pieza disponible" : `Solo ${product.stock} piezas disponibles`}
+                  </p>
+                )}
               </div>
               <WishlistButton
                 productId={product.id}
@@ -289,10 +302,12 @@ export default function ProductPageClient() {
             <div className="space-y-2 pt-1">
               <button
                 onClick={handleAddToCart}
-                disabled={hasVariants ? !selectedColor : false}
+                disabled={isOutOfStock || (hasVariants ? !selectedColor : false)}
                 className={`w-full flex items-center justify-center gap-2.5 py-4 text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed ${
                   added
                     ? "bg-ink text-cream-100"
+                    : isOutOfStock
+                    ? "bg-ink/30 text-cream-100"
                     : sizeError
                     ? "bg-red-400/80 text-white"
                     : "bg-champagne hover:bg-champagne-dark text-espresso"
@@ -305,7 +320,7 @@ export default function ProductPageClient() {
                     </svg>
                     Agregado
                   </>
-                ) : "Agregar al carrito"}
+                ) : isOutOfStock ? "No disponible" : "Agregar al carrito"}
               </button>
 
               <a
